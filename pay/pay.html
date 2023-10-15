@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Paiement RBZ</title>
+    <link rel="stylesheet" href="pay.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="button partyjs" onmousedown="party.confetti(this)" id="partyjs">Click me!</div>
+    <script>
+        const partyjs = document.querySelector("partyjs")
+        setTimeout(() => {
+            partyjs.click();
+        }, 3000);
+    </script>
+
+    <div class="load" id="loader">
+        <div class="loader">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+            <div class="bar4"></div>
+            <div class="bar5"></div>
+            <div class="bar6"></div>
+            <div class="bar7"></div>
+            <div class="bar8"></div>
+            <div class="bar9"></div>
+            <div class="bar10"></div>
+            <div class="bar11"></div>
+            <div class="bar12"></div>
+        </div>
+    </div>
+    <div class="mobile" id="mobile">
+        <p>Vous envoyez <span> 20$ </span> à Mr Rubuz de chez Safaridew. </p>
+        <form method="POST" id="myForm">
+                    
+        <!-- ============ HIDDEN SECTION ============ -->
+            <input type="hidden" name="authorization" placeholder="authorization" value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcL2xvZ2luIiwicm9sZXMiOlsiTUVSQ0hBTlQiXSwiZXhwIjoxNzQ2MTE3MTkyLCJzdWIiOiI2MDQ5ODE2N2ViNjZlMDIyNGU5MGFhMDg1MTExYmJhNSJ9.hMtfna-5wwYr3OQXeuvMwHlPQ0b9WhyjDOqLR1a7JVc">
+            <input type="hidden" name="merchant" placeholder="merchant" value="SAFARIDEV">
+            <input type="hidden" name="reference" id="input-id" value="">
+            <input type="number" name="amount" id="amount" value="" min="10" placeholder="Saisir le montant">
+            <input type="hidden" name="type" placeholder="type de la transaction" value="1">
+            <input type="hidden" name="currency" id="currency" value="usd">
+            <input type="hidden" name="callback_url" placeholder="callback_url" value="https://www.monami.fun">
+
+            <input type="tel" name="phone" placeholder="Saisir le numéro qui paye (243 . . .)">
+            <!-- <label for="usd" class="selected"> USD ($) </label>
+            <input type="radio" name="currency" id="usd">
+            <label for="cdf"> CDF (Fc) </label>
+            <input type="radio" name="devise" id="cdf"> -->
+            <button type="submit" id="confirmer" > Payer maintenant </button>
+        </form>
+
+        <div class="lienCard" id="cardOnglet"> Payer avec une carte bancaire <ion-icon name="card-outline"></ion-icon> </div>
+    </div>
+
+    <div class="card" id="card">
+        <form action="https://cardpayment.flexpay.cd/v1/pay" method="POST" id="cardForm">
+            <input type="hidden" name="authorization" placeholder="authorization" id="" value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcL2xvZ2luIiwicm9sZXMiOlsiTUVSQ0hBTlQiXSwiZXhwIjoxNzQ2MTE3MTkyLCJzdWIiOiI2MDQ5ODE2N2ViNjZlMDIyNGU5MGFhMDg1MTExYmJhNSJ9.hMtfna-5wwYr3OQXeuvMwHlPQ0b9WhyjDOqLR1a7JVc"> <br>
+            <input type="hidden" name="merchant" placeholder="merchant" id="" value="SAFARIDEV"> <br>
+            <input type="hidden" name="reference" placeholder="reference" id="input-id" value="SAFARIDEV"> <br>
+            <input type="hidden" name="currency" placeholder="currency" id="" value="USD"> <br>
+            <input type="hidden" name="description" placeholder="description" value="Abonnement monami Premium"> <br>
+            <input type="hidden" name="callback_url" placeholder="callback_url" value="https://www.monami.fun/callback"> <br>
+            <input type="hidden" name="approve_url" placeholder="approve_url" value="https://www.monami.fun/home"> <br>
+            <input type="hidden" name="cancel_url" placeholder="cancel_url" value="https://www.monami.fun/home"> <br>
+            <input type="hidden" name="decline_url" placeholder="decline_url" value="https://www.monami.fun/home"> <br>
+            <input type="number" name="amount" min="10" placeholder="Saisir le montant" id="" required>
+            <button type="submit" id="cardSubmit"> soumettre </button>
+        </form>
+        <div class="cardlogo">
+            <ion-icon name="card-outline"></ion-icon>
+            <p> Paiement sécurisé <span> <ion-icon name="shield-checkmark-outline"></ion-icon> </span></p>
+        </div>
+    </div>
+
+    <script>
+
+        let cardOnglet = document.getElementById('cardOnglet');
+
+        let card = document.getElementById('card');
+        let mobile = document.getElementById('mobile');
+
+
+        cardOnglet.onclick = ()=> {
+            card.classList.add("active")
+            mobile.classList.add("active")
+        }
+
+        // Récupère l'élément HTML dans lequel afficher l'ID généré
+        let randomIdElement = document.getElementById('random-id');
+        let inputRef = document.getElementById('input-id');
+    
+        let cardForm = document.getElementById("cardForm")
+        let cardSubmit = document.getElementById("cardSubmit")
+    
+        cardSubmit.onclick = ()=> {
+          cardForm.submit()
+        }
+    
+        function generateRandomId() {
+          // Crée un tableau de caractères aléatoires
+          var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+          // Définit la longueur de l'ID que vous voulez générer
+          var idLength = 10;
+    
+          // Initialise une chaîne vide pour stocker l'ID généré
+          var randomId = '';
+    
+      // Boucle sur la longueur souhaitée de l'ID pour ajouter des caractères aléatoires
+      for (var i = 0; i < idLength; i++) {
+        // Sélectionne un caractère aléatoire à partir du tableau de caractères
+        var randomChar = chars[Math.floor(Math.random() * chars.length)];
+    
+        // Ajoute le caractère sélectionné à la chaîne d'ID
+        randomId += randomChar;
+      }
+        // Convertit l'ID en majuscules
+        randomId = randomId.toUpperCase();
+    
+        // Renvoie l'ID généré
+        return randomId;
+    
+      }
+    
+        // Génère un ID aléatoire
+        var randomId = generateRandomId();
+        // Insère la valeur de l'ID généré dans l'élément HTML
+        randomIdElement.textContent = randomId;
+    
+        inputRef.value = randomId;
+      </script>
+
+    <script>
+        
+            // ======================================================================================================
+            // ============================================= PAIEMENT ===============================================
+            // ======================================================================================================
+            const form = document.querySelector('#myForm');
+            const merchantInput = form.querySelector('[name="merchant"]');
+            const typeInput = form.querySelector('[name="type"]');
+            const phoneInput = form.querySelector('[name="phone"]');
+            const referenceInput = form.querySelector('[name="reference"]');
+            const amountInput = form.querySelector('[name="amount"]');
+            const currencyInput = form.querySelector('[name="currency"]');
+            const callbackUrlInput = form.querySelector('[name="callback_url"]');
+            const authorizationInput = form.querySelector('[name="authorization"]');
+            //const success = document.getElementById("success")
+
+
+            form.addEventListener('submit', function(event) {
+            event.preventDefault(); // empêche la soumission du formulaire par défaut
+            loader.classList.add("active");
+
+            const data = {
+                "merchant": merchantInput.value,
+                "type": typeInput.value,
+                "phone": phoneInput.value,
+                "reference": referenceInput.value,
+                "amount": (parseFloat(amountInput.value) * 1.05).toString(),
+                "currency": currencyInput.value,
+                "callbackUrl": callbackUrlInput.value
+            };
+
+        
+            const countdownElement = document.getElementById("compteArebours");
+            const jsonData = JSON.stringify(data);
+
+            //http://41.243.7.46:3006/flexpay/api/rest/v1/paymentService  ============ https://backend.flexpay.cd/api/rest/v1/paymentService
+            const gateway = "https://backend.flexpay.cd/api/rest/v1/paymentService"; 
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", gateway);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", authorizationInput.value);
+
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    const code = response.code;
+                    if (code != "0") {
+                    const error_message = 'Impossible de traiter la demande, veuillez réessayer';
+                    console.log(error_message);
+                    loader.classList.remove("active");
+                    alert("Impossible de traiter la demande, veuillez actualiser la page et réessayez")
+                    } else {
+                    //===========Transaction reussie, notification PUSH envoyée=============
+                        const message = response.message;
+                        const orderNumber = response.orderNumber;
+                        //console.log(message, orderNumber);
+                        setTimeout(() => {
+                            //success.classList.add("active")
+                        }, 1000);
+
+                        setTimeout(() => {
+                            //success.classList.remove("active")
+                        }, 3000);
+
+                        localStorage.setItem('TransID', orderNumber); //STocker orderNumber dans le stockage local
+                        // Pour la recuperer === const retrievedVariable = localStorage.getItem('TransID');
+
+
+                            // Redirection vers la page pour valider ou rejeter la transaction 
+                            //window.location.href = "{{ url_for('callback') }}";
+
+                        //============================================================================================
+                        //============================================= CALLBACK ================================= =============================================================================================
+                            setTimeout(() => {
+                                let retrievedVariable = localStorage.getItem('TransID');
+                                // Envoyer une requête POST avec les données JSON après la charge de la page
+                                //prod :::: https://backend.flexpay.cd/api/rest/v1/check/ ======= TEST 'http://41.243.7.46:3006/api/rest/v1/check/'
+                                const apiUrl = 'https://backend.flexpay.cd/api/rest/v1/check/';
+                                
+                                const authorization = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcL2xvZ2luIiwicm9sZXMiOlsiTUVSQ0hBTlQiXSwiZXhwIjoxNzQ2MTE3MTkyLCJzdWIiOiI2MDQ5ODE2N2ViNjZlMDIyNGU5MGFhMDg1MTExYmJhNSJ9.hMtfna-5wwYr3OQXeuvMwHlPQ0b9WhyjDOqLR1a7JVc';
+                                const orderNumber = localStorage.getItem('TransID');
+                                
+                                if (localStorage.getItem('TransID')) { //orderNumber existe ou pas
+                            
+                                console.log(orderNumber)
+                                console.log('La valeur existe dans le localStorage');
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('GET', apiUrl + orderNumber);
+                                xhr.setRequestHeader('authorization', 'Bearer ' + authorization);
+                                xhr.onload = function() {
+                                    if (xhr.status === 200) {
+                                    // Traitement de la réponse
+                                    const response = JSON.parse(xhr.responseText);
+                                    console.log('Réponse :', response);
+
+                                        // Extraction des éléments du tableau JSON dans des variables distinctes
+                                        const { reference, amount, amountCustomer, currency, createdAt, status } = response.transaction;
+
+                                        
+
+                                        // Affichage des variables
+                                        console.log('Order Number:', orderNumber);
+                                        //console.log('Reference:', reference);
+                                        console.log('Amount:', amount);
+                                        console.log('Amount Customer:', amountCustomer);
+                                        console.log('Currency:', currency);
+                                        console.log('Created At:', createdAt);
+                                        console.log('Status:', status);
+                                        
+                                        // Initialiser PartyJS 
+
+
+                                        setTimeout(() => {
+                                        if( status == 0 ){  //Paiement a reussi
+                                            
+
+                                        
+                                        }else{
+                                            //Paiement a echoué, retour vers le paiement
+                                            //window.location.reload();
+                                            alert("Votre paiement a echoué, veuillez réessayer.")
+                                            loader.classList.remove("active")
+                                        }
+                                        }, 5000);
+                                    } else {
+                                    // Gestion des erreurs
+                                    console.error('Erreur :', xhr.statusText);
+                                    }
+                                };
+                                xhr.onerror = function() {
+                                    console.error('Erreur de réseau');
+                                    
+                                    alert("Une erreur reseau.")
+                                    setTimeout(() => {
+                                    //window.location.href="{{ url_for('home') }}"
+                                    }, 5000);
+                                    
+                                };
+                                xhr.send();
+                                } else {
+                                //orderNumber n'existe pas dans localStorage
+                                window.location.reload();
+                                alert("Une erreur lors du traitement de la requête, veuillez réessayer")
+                            }
+
+                            }, 10000);
+                    }
+                } else {
+                    const error_message = 'Une erreur lors du traitement de votre requête';
+                    console.log(error_message);
+                    loader.classList.remove("active");
+                    alert("Une erreur lors du traitement de la requête, veuillez réessayer")
+                }
+                }
+            };
+
+            xhr.send(jsonData);
+            });
+
+            //==================GENERER un ID unique===================
+            var inputElement = document.getElementById('input-id');
+
+            function generateRandomId() {
+                // Crée un tableau de caractères aléatoires
+                var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                // Définit la longueur de l'ID que vous voulez générer
+                var idLength = 10;
+
+                // Initialise une chaîne vide pour stocker l'ID généré
+                var randomId = '';
+
+                // Boucle sur la longueur souhaitée de l'ID pour ajouter des caractères aléatoires
+                for (var i = 0; i < idLength; i++) {
+                    // Sélectionne un caractère aléatoire à partir du tableau de caractères
+                    var randomChar = chars[Math.floor(Math.random() * chars.length)];
+
+                    // Ajoute le caractère sélectionné à la chaîne d'ID
+                    randomId += randomChar;
+                }
+                // Convertit l'ID en majuscules
+                randomId = randomId.toUpperCase();
+
+                // Renvoie l'ID généré
+                return randomId;
+
+            }
+
+            // Génère un ID aléatoire
+            var randomId = generateRandomId();
+
+            // Insère la valeur de l'ID généré dans l'élément HTML
+            //randomIdElement.textContent = randomId;
+
+            inputElement.value = randomId;
+
+
+            // Sélectionne le champ de téléphone
+            const phoneChamp = document.querySelector('input[type="tel"]');
+
+            // Ajoute un écouteur d'événement de saisie à l'entrée de téléphone
+            phoneChamp.addEventListener('input', () => {
+                let phoneNumber = phoneChamp.value.replace(/\D/g, ''); // Supprime tous les caractères non numériques
+                let validPhoneNumber = /^[2-5]{1}[0-9]{8}$/.test(phoneNumber); // Vérifie si le numéro correspond au format attendu
+
+                if (phoneNumber.startsWith('0')) { // Si le numéro commence par 0
+                    phoneNumber = '243' + phoneNumber.slice(1); // Supprime le 0 et ajoute 243 au début
+                    validPhoneNumber = true; // Le numéro est maintenant valide
+
+                } else if (phoneNumber.startsWith('+243')) { // Si le numéro commence par +243
+                    phoneNumber = phoneNumber.slice(1); // Supprime le signe +
+                    validPhoneNumber = true; // Le numéro est valide
+
+                } else if (phoneNumber.startsWith('243')) { // Si le numéro commence par 243
+                    // Ne rien faire. Le numéro est déjà au bon format.
+
+                } else { // Si le numéro ne commence par 0, +243 ou 243
+                    validPhoneNumber = false; // Le numéro n'est pas valide
+                }
+
+                // Mettre à jour la valeur du champ de téléphone avec le numéro mis à jour
+                phoneChamp.value = phoneNumber;
+
+                if (validPhoneNumber) {
+                    phoneChamp.style.border = '1px solid #ccc'; // Réinitialise la couleur de bordure
+                } else {
+                    phoneChamp.style.border = '2px solid green'; // Définit la couleur de bordure en rouge
+                }
+            });
+
+            // =====================================================================================================
+            // ====================================== FIN PAIEMENT =================================================
+            // =====================================================================================================
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
